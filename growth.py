@@ -1,9 +1,9 @@
-import streamlit as st   # type: ignore
-import pandas as pd    # type: ignore
+import streamlit as st   
+import pandas as pd    
 import os
 from io import BytesIO
 
-st.set_page_config(page_title= "Data Sweeper", layout='wide' )
+st.set_page_config(page_title= "Data Sweeper", layout='wide' ) 
 
 #custom css
 st.markdown(
@@ -84,7 +84,7 @@ if st.button(f"Convert {file.name}"):
     mime_type = "text/csv"
 
 else:
-    df.to_excel(buffer, index=False)
+    df.to_excel(buffer, index=False, engine="openpyxl")
     file_name = file.name.replace(file_ext, ".xlsx")
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 buffer.seek(0)
