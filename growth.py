@@ -1,6 +1,5 @@
-from operator import index
 import streamlit as st   # type: ignore
-import pandas as pd  # type: ignore
+import pandas as pd    # type: ignore
 import os
 from io import BytesIO
 
@@ -9,6 +8,7 @@ st.set_page_config(page_title= "Data Sweeper" ,layout='wide' ) # type: ignore
 #custom css
 st.markdown(
     """
+
 <style>
 .stApp{
     background-color:black;
@@ -20,7 +20,7 @@ unsafe_allow_html=True
 )
 
 #title and descripion
-st.title("💿Dataweeper sterling Integrator By Manjula Chohan")
+st.title("💿 Dataweeper sterling Integrator By Manjula Chohan")
 st.write("Transform your files between CSV and Excel formats with built-in data cleaning the project for quarter 3!")
 
 #file uploader
@@ -32,11 +32,12 @@ if uploaded_files:
 
         if file_ext == ".csv":
             df = pd.read_csv(file)
-        elif file_ext == "xlsx":
+        elif file_ext == ".xlsx":
             df = pd.read_excel(file)
         else:
             st.error(f"unsupported file type:{file_ext}")
             continue
+
         #file details
         st.write("🔍Preview the head of the Dataframe") 
         st.dataframe(df.head())
@@ -73,15 +74,17 @@ if uploaded_files:
 
 st.subheader("🔄 Conversion Options")
 conversion_type = st.radio(f"Convert {file.name} to:", ["CSV", "Excel"],  key=file.name)
-if st.button(f"Conert {file.name}"):
-    buffer = BytesIO()
+
+buffer = BytesIO()
+
+if st.button(f"Convert {file.name}"):
     if conversion_type == "CSV":
      df.to_csv(buffer, index=False)
     file_name = file.name.replace(file_ext, ".csv")
     mime_type = "text/csv"
 
-elif conversion_type == "Excel":
-    df.to_excel(buffer, index=False)  # type: ignore
+else:
+    df.to_excel(buffer, index=False)
     file_name = file.name.replace(file_ext, ".xlsx")
     mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 buffer.seek(0)
