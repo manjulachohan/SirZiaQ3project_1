@@ -8,15 +8,14 @@ st.set_page_config(page_title= "Data Sweeper", layout='wide' )
 #custom css
 st.markdown(
     """
-
-<style>
-.stApp{
-    background-color:black;
-    color: white;
-    }
-    </style>
-""",
-unsafe_allow_html=True
+    <style>
+    .stApp{
+        background-color:black;
+        color: white;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
 )
 
 #title and descripion
@@ -42,8 +41,6 @@ if uploaded_files:
         st.write("🔍Preview the head of the Dataframe") 
         st.dataframe(df.head())
 
-
-
         #data cleaning options
         st.subheader("🛠 Data Cleaning Options")
         if st.checkbox(f"Clean data for {file.name}"):
@@ -55,46 +52,44 @@ if uploaded_files:
                     st.write("✅ Duplicates removed!")
 
             with col2:
-              if st.button(f"Fill missing values for {file.name}"):
-                numeric_cols = df.select_dtypes(include=['number']).columns
-                df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
-                st.write("✅ Missing values have been filled!")
-    st.subheader("🎯 Select Columns to Keep")
-    columns = st.multiselect(f"Choose columns for {file.name}", df.columns, default=df.columns)
-    df = df[columns]                       
+                if st.button(f"Fill missing values for {file.name}"):
+                    numeric_cols = df.select_dtypes(include=['number']).columns
+                    df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
+                    st.write("✅ Missing values have been filled!")
+
+        st.subheader("🎯 Select Columns to Keep")
+        columns = st.multiselect(f"Choose columns for {file.name}", df.columns, default=df.columns)
+        df = df[columns]                       
             
 
+        #data visualization
+        st.subheader("📊 Data Visualization")
+        if st.checkbox(f"Show visualization for {file.name}"):
+            st.bar_chart(df.select_dtypes(include='number').iloc[:, :2])
 
-    #data visualization
-    st.subheader("📊 Data Visualization")
-    if st.checkbox(f"Show visualization for {file.name}"):
-        st.bar_chart(df.select_dtypes(include='number').iloc[:, :2])
+        #Conversion Options 
 
-#Conversion Options 
+        st.subheader("🔄 Conversion Options")
+        conversion_type = st.radio(f"Convert {file.name} to:", ["CSV", "Excel"],  key=file.name)
+        if st.button(f"Convert {file.name}"):
+            buffer = BytesIO()
+            if conversion_type == "CSV":
+                df.to_csv(buffer, index=False)
+                file_name = file.name.replace(file_ext, ".csv")
+                mime_type = "text/csv"
 
-st.subheader("🔄 Conversion Options")
-conversion_type = st.radio(f"Convert {file.name} to:", ["CSV", "Excel"],  key=file.name)
+            elif conversion_type == "Excel":
+                df.to_excel(buffer, index=False, engine="openpyxl")
+                file_name = file.name.replace(file_ext, ".xlsx")
+                mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            buffer.seek(0)
 
-buffer = BytesIO()
-
-if st.button(f"Convert {file.name}"):
-    if conversion_type == "CSV":
-     df.to_csv(buffer, index=False)
-    file_name = file.name.replace(file_ext, ".csv")
-    mime_type = "text/csv"
-
-else:
-    df.to_excel(buffer, index=False, engine="openpyxl")
-    file_name = file.name.replace(file_ext, ".xlsx")
-    mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-buffer.seek(0)
-
-st.download_button(
-    label=f"Download {file_name} as {conversion_type}",
-    data=buffer,
-    file_name=file_name,
-    mime=mime_type
-)
-
+            st.download_button(
+               label=f"Download {file_name} as {conversion_type}",
+               data=buffer,
+               file_name=file_name,
+               mime=mime_type
+            )
 
 st.success("🎉 All files processed successfully!")
+
