@@ -44,7 +44,7 @@ if uploaded_files:
 
         #data cleaning options
         st.subheader("🛠 Data Cleaning Options")
-        if st.checkbox(f"Clean data for {file.name}"):
+        if st.checkbox(f"Clean data for {file.name}", key=f"clean_{safe_name}_{index}"):
             col1, col2 = st.columns(2)
 
             with col1:
@@ -65,8 +65,8 @@ if uploaded_files:
 
         #data visualization
         st.subheader("📊 Data Visualization")
-        if st.checkboxf(f"Show visualization for {file.name}", key=f"viz_{safe_name}_{index}"):
-            st.bar_chart(df.select_dtypes(include='number').iloc[:, :2])
+        if st.checkbox(f"Show visualization for {file.name}", key=f"viz_{safe_name}_{index}"):
+           st.bar_chart(df.select_dtypes(include='number').iloc[:, :2])
 
         #Conversion Options 
 
